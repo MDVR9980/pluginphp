@@ -11,6 +11,7 @@ set_value([
 
 	'login_page'		=>'login',
 	'signup_page'		=>'signup',
+	'forgot_page'		=> 'forgot',
 	'tables'			=> [
 
 	],

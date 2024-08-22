@@ -22,10 +22,37 @@ set_value([
 add_action('controller',function(){
 
 	$vars = get_value();
+	$req = new \Core\Request;
 
-	require plugin_path('controllers/controller.php');
+	if($req->posted() && page() == $vars['login_page']) {
+		require plugin_path('controllers/loginController.php');
+	} else 
+	if($req->posted() && page() == $vars['signup_page']) {
+		require plugin_path('controllers/signupController.php');
+	}
 });
 
+/** add menu links **/
+add_filter('header-footer_before_menu_links',function($links) {
+
+	$link		 = (object)[];
+	$link->id	 = 0;
+	$link->title = 'Login';
+	$link->slug  = 'login';
+	$link->icon = '';
+	$link->permission = 'not_logged_in';
+	$links[] = $link;
+
+	$link		 = (object)[];
+	$link->id	 = 0;
+	$link->title = 'Signup';
+	$link->slug  = 'signup';
+	$link->icon = '';
+	$link->permission = 'not_logged_in';
+	$links[] = $link;
+
+	return $links;
+});
 
 /** displays the view file **/
 add_action('view',function(){
@@ -36,6 +63,7 @@ add_action('view',function(){
 		require plugin_path('views/login.php');
 	} else 
 	if(page() == $vars['signup_page']) {
+		$errors = $vars['errors'] ?? [];
 		require plugin_path('views/signup.php');
 	}
 });

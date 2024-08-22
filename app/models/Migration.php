@@ -69,9 +69,9 @@ class Migration extends Database
 		if(!empty($this->data) && is_array($this->data))
 		{
 
-			foreach ($data as $row) {
+			foreach ($this->data as $row) {
 				
-				$keys = array_keys($rows);
+				$keys = array_keys($row);
 				$columns_string = implode(",", $keys);
 				$values_string = ':'.implode(",:", $keys);
 

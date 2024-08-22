@@ -1,4 +1,4 @@
-<div class="col-md-10 mx-auto p-4 bg-light">
+<div class="col-md-10 mx-auto p-4">
 	<center>
 		
 		<h3>Footer</h3>

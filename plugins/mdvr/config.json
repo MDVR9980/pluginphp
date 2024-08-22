@@ -7,7 +7,7 @@
 	"active":true,
 	"index":1,
 	"routes": {
-		"on":["login", "signup"],
+		"on":["all"],
 		"off":[]
 	},
 	"dependencies": {

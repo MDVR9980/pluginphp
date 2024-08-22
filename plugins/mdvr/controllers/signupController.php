@@ -2,7 +2,7 @@
 
 $user = new \mdvr\User;
 
-if($user->validate_insert($req->post())) {
+if($csrf = csrf_verify($req->post()) && $user->validate_insert($req->post())) {
     $postdata = $req->post();
     $postdata['data-created'] = date('Y-m-d H:i:s');
     $postdata['password'] = password_hash($postdata['password'], PASSWORD_DEFAULT);
@@ -10,5 +10,8 @@ if($user->validate_insert($req->post())) {
     message('Signup complite! Please login to continue ');
     redirect($vars['login_page']);
 } else {
+    if(!$csrf)
+        $user->errors['email'] = 'Form expired! Please refresh';
+
     set_value('errors', $user->errors);
 }

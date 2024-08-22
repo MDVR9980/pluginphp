@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="<?=plugin_http_path('assets/css/style.css')?>">
 
-<main class="p-4" style="background-color: #dde5f4; height:100vh">
+<main class="p-4" style="background-color: #dde5f4;">
     <form method="post" class="col-xl-3 col-lg-4 col-md-6 col-sm-8 mx-auto p-4 shadow" style="border-radius: 40px; background-color: #f1f7fe">
         <h3 class="text-center mt-2">Signup</h3>
 

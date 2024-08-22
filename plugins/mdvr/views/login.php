@@ -1,9 +1,9 @@
 <link rel="stylesheet" type="text/css" href="<?=plugin_http_path('assets/css/style.css')?>">
 
-<main class="p-4" style="background-color: #dde5f4; height:100vh">
+<main class="p-4" style="background-color: #dde5f4;">
     <form method="post" class="col-xl-3 col-lg-4 col-md-6 col-sm-8 mx-auto p-4 shadow" style="border-radius: 40px; background-color: #f1f7fe">
         
-        <?php csrf()?>
+        <?=csrf()?>
         
         <div class="text-center">
             <svg fill="#3d4785" style="border-radius: 50%" width="80" height="80" viewBox="0 0 24 24"><path d="M19 7.001c0 3.865-3.134 7-7 7s-7-3.135-7-7c0-3.867 3.134-7.001 7-7.001s7 3.134 7 7.001zm-1.598 7.18c-1.506 1.137-3.374 1.82-5.402 1.82-2.03 0-3.899-.685-5.407-1.822-4.072 1.793-6.593 7.376-6.593 9.821h24c0-2.423-2.6-8.006-6.598-9.819z"/></svg>
@@ -14,7 +14,7 @@
         <div class="mb-4 text-muted text-center"><i>Please login to continue</i></div>
         
         <?php if(message()):?>
-            <div class="alert alert-success text-center">
+            <div class="alert alert-danger text-center">
                 <?=esc(message('', true))?>
             </div>
         <?php endif?>

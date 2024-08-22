@@ -1,0 +1,17 @@
+{
+	"name":"MDVR",
+	"id":"MDVR9980",
+	"author":"",
+	"author website":"",
+	"thumbnail":"thumbnail.jpg",
+	"active":true,
+	"index":1,
+	"routes": {
+		"on":["login", "signup"],
+		"off":[]
+	},
+	"dependencies": {
+
+	}
+
+}

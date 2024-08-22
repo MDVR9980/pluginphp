@@ -1,0 +1,17 @@
+{
+	"name":"Page Not found",
+	"id":"404",
+	"author":"Eathorne",
+	"author website":"www.freephptutorials.com",
+	"thumbnail":"thumbnail.jpg",
+	"active":true,
+	"index":1,
+	"routes": {
+		"on":["404"],
+		"off":[]
+	},
+	"dependencies": {
+
+	}
+
+}

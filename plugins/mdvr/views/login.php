@@ -13,6 +13,12 @@
         
         <div class="mb-4 text-muted text-center"><i>Please login to continue</i></div>
         
+        <?php if(message()):?>
+            <div class="alert alert-success text-center">
+                <?=esc(message('', true))?>
+            </div>
+        <?php endif?>
+        
         <div class="form-floating my-4">
             <input value="<?=old_value('email')?>" name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" style="border-radius: 40px;">
             <label for="floatingInput">Email address</label>

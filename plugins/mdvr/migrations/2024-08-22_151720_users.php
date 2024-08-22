@@ -19,7 +19,7 @@ class Users extends Migration
 		$this->addColumn('gender varchar(6) null');
 		$this->addColumn('iamge varchar(1024) null');
 		$this->addColumn('email varchar(100) null');
-		$this->addColumn('password varchar(32) null');
+		$this->addColumn('password varchar(100) null');
 		$this->addColumn('deleted tinyint(1) unsigned default 0');
 		$this->addColumn('date_created datetime default null');
 		$this->addColumn('date_updated datetime default null');
@@ -43,11 +43,11 @@ class Users extends Migration
 			'first_name' => 'john',
 			'last_name' => 'email@email.com',
 			'email' => 'male',
-			'password' => md5('@@darkday@@'.'password'."@@darkday@@"),
+			'password' => password_hash('password', PASSWORD_DEFAULT),
 			'gender' => 'male',
 			'date_created' => date('Y-m-d:H:i:s'),
 		]);
-		
+
 		$this->insert('users');
 
 	}

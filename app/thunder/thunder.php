@@ -182,6 +182,11 @@ class Thunder
 			$content = str_replace("{TABLE_NAME}", $table_name, $content);
 			$content = str_replace("{CLASS_NAME}", $class_name, $content);
 
+			$namespace = str_replace("-"," ", $original_folder);
+			$namespace = ucwords($namespace);
+			$namespace = str_replace(" ","", $namespace);
+			$content = str_replace("{NAMESPACE}", $original_folder, $content);
+
 			$filename = $model_folder . $class_name . '.php';
 			file_put_contents($filename, $content);
 

@@ -24,8 +24,8 @@
         
         <select class="form-select p-3" name="gender" style="border-radius: 40px;">
             <option value="">--Select Gender--</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option <?=old_select('gender', 'male')?> value="male">Male</option>
+            <option <?=old_select('gender', 'female')?> value="female">Female</option>
         </select>
         <?php if(!empty($errors['gender'])): ?>
                 <small class="text-danger px-2"><?=$errors['gender']?></small>

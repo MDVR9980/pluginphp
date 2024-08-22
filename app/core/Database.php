@@ -101,9 +101,9 @@ class Database
 
 		$result = do_filter('after_query',$arr);
 
-		if(is_array($result) && count($result) > 0)
+		if(is_array($result['result']) && count($result) > 0)
 		{
-			return $result;
+			return $result['result'];
 		}
 
 		return false;

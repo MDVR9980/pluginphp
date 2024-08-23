@@ -4,16 +4,16 @@
  * Plugin name: Basic Authentication
  * Description: lets users login and signup
  * 
- * 
  **/
 
 set_value([
 
-	'login_page'		=>'login',
-	'signup_page'		=>'signup',
-	'logout_page'		=> 'logout',
-	'forgot_page'		=> 'forgot',
-	'tables'			=> [
+	'login_page'		 =>'login',
+	'signup_page'		 =>'signup',
+	'logout_page'		 => 'logout',
+	'forgot_page'		 => 'forgot',
+	'admin_plugin_route' => 'admin',
+	'tables'			 => [
 
 	],
 
@@ -41,6 +41,8 @@ add_action('controller',function(){
 add_filter('header-footer_before_menu_links',function($links) {
 
 	$ses = new \Core\Session;
+	$vars = get_value();
+	
 	$link		 = (object)[];
 	$link->id	 = 0;
 	$link->title = 'Login';
@@ -59,11 +61,20 @@ add_filter('header-footer_before_menu_links',function($links) {
 
 	$link		 = (object)[];
 	$link->id	 = 0;
+	$link->title = 'Admin';
+	$link->slug  = $vars['admin_plugin_route'];
+	$link->icon = '';
+	$link->permission = 'logged_in';
+	$links[] = $link;
+
+	$link		 = (object)[];
+	$link->id	 = 0;
 	$link->title = 'Logout';
 	$link->slug  = 'logout';
 	$link->icon = '';
 	$link->permission = 'logged_in';
 	$links[] = $link;
+
 
 	$link		 = (object)[];
 	$link->id	 = 0;

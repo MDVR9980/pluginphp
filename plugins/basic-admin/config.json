@@ -1,17 +1,17 @@
 {
-	"name":"Basic Auth",
-	"id":"basic-auth",
+	"name":"Basic Admin",
+	"id":"basic-admin",
 	"author":"MDVR9980",
 	"author website":"",
 	"thumbnail":"thumbnail.jpg",
 	"active":true,
-	"index":1,
+	"index":2,
 	"routes": {
-		"on":["all"],
-		"off":["admin"]
+		"on":["admin"],
+		"off":[]
 	},
 	"dependencies": {
 
 	}
 
-} 
+}

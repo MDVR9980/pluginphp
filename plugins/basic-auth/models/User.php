@@ -1,6 +1,6 @@
 <?php
 
-namespace mdvr;
+namespace Basic_auth;
 
 use \Model\Model;
 defined('ROOT') or die("Direct script access denied");

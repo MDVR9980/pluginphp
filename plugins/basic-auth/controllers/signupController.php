@@ -1,6 +1,6 @@
 <?php
 
-$user = new \mdvr\User;
+$user = new \Basic_auth\User;
 
 if($csrf = csrf_verify($req->post()) && $user->validate_insert($req->post())) {
     $postdata = $req->post();

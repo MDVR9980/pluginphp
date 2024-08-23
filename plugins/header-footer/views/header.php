@@ -9,14 +9,13 @@
 <body>
 
 	<div class="col-md-10 mx-auto p-4">
+
 		<?php if(!empty($links)):?>
 			<?php foreach($links as $link):?>
 
 				<?php if(user_can($link->permission)):?>
 					<a href="<?=ROOT?>/<?=$link->slug?>"><?=$link->title?></a>
 				<?php endif?>
-				
 			<?php endforeach?>
 		<?php endif?>
 	</div>
-

@@ -1,5 +1,5 @@
 {
-	"name":"Basic Auth",
+	"name":"Basic Authentication",
 	"id":"basic-auth",
 	"author":"MDVR9980",
 	"author website":"",
@@ -8,10 +8,9 @@
 	"index":1,
 	"routes": {
 		"on":["all"],
-		"off":["admin"]
+		"off":[]
 	},
 	"dependencies": {
 
 	}
-
-} 
+}

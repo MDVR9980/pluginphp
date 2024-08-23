@@ -7,8 +7,7 @@ defined('ROOT') or die("Direct script access denied");
 /**
  * Request class
  */
-class Request
-{
+class Request {
 	public $upload_max_size 	= 20;
 	public $upload_folder 		= 'uploads';
 	public $upload_errors 		= [];
@@ -20,18 +19,15 @@ class Request
 		'image/gif',
 	];
 
-	public function method():string
-	{
+	public function method():string {
 		return $_SERVER['REQUEST_METHOD'];
 	}
 
-	public function posted():bool
-	{
+	public function posted():bool {
 		return $_SERVER['REQUEST_METHOD'] == 'POST';
 	}
 
-	public function post(string $key = ''):string|array
-	{
+	public function post(string $key = ''):string|array {
 		if(empty($key))
 			return $_POST;
 
@@ -41,16 +37,14 @@ class Request
 		return '';
 	}
 
-	public function input(string $key, string $default = ''):string
-	{
+	public function input(string $key, string $default = ''):string {
 		if(!empty($_POST[$key]))
 			return $_POST[$key];
 
 		return $default;
 	}
 
-	public function get(string $key = ''):string
-	{
+	public function get(string $key = ''):string {
 		if(empty($key))
 			return $_GET;
 
@@ -60,8 +54,7 @@ class Request
 		return '';
 	}
 
-	public function files(string $key = ''):string|array
-	{
+	public function files(string $key = ''):string|array {
 		if(empty($key))
 			return $_FILES;
 
@@ -71,8 +64,7 @@ class Request
 		return '';
 	}
 
-	public function all(string $key = ''):string|array
-	{
+	public function all(string $key = ''):string|array {
 		if(empty($key))
 			return $_REQUEST;
 
@@ -82,21 +74,18 @@ class Request
 		return '';
 	}
 
-	public function upload_files(string $key = ''):string|array
-	{
+	public function upload_files(string $key = ''):string|array {
 		$this->upload_errors 		= [];
 		$this->upload_error_code 	= 0;
 
 		$uploaded = empty($key) ? [] : '';
 
-		if(!empty($this->files()))
-		{
+		if(!empty($this->files())) {
 			$get_one = false;
 			if(!empty($key))
 				$get_one = true;
 
-			if($get_one && empty($this->files()[$key]))
-			{
+			if($get_one && empty($this->files()[$key])) {
 				$this->upload_errors['name'] = 'File not found';
 				return '';
 			}
@@ -104,21 +93,18 @@ class Request
 			$uploaded = [];
 			foreach ($this->files() as $key => $file_arr) {
 				
-				if($file_arr['error'] > 0)
-				{
+				if($file_arr['error'] > 0) {
 					$this->upload_error_code = $file_arr['error'];
 					$this->upload_errors[] = "An error occured with file: ". $file_arr['name'];
 					continue;
 				}
 
-				if(!in_array($file_arr['type'], $this->upload_file_types))
-				{
+				if(!in_array($file_arr['type'], $this->upload_file_types)) {
 					$this->upload_errors[] = "Invalid file type: ". $file_arr['name'];
 					continue;
 				}
 
-				if($file_arr['size'] > ($this->upload_max_size * 1024 * 1024))
-				{
+				if($file_arr['size'] > ($this->upload_max_size * 1024 * 1024)) {
 					$this->upload_errors[] = "File too large: ". $file_arr['name'];
 					continue;
 				}
@@ -127,8 +113,7 @@ class Request
 				$destination = $folder . $file_arr['name'];
 
 				$num = 0;
-				while(file_exists($destination) && $num < 10)
-				{
+				while(file_exists($destination) && $num < 10) {
 					$num++;
 					$ext = explode(".", $destination);
 					$ext = end($ext);
@@ -150,11 +135,7 @@ class Request
 				return $uploaded[0] ?? '';
 
 			return $uploaded;
-			
 		}
-
 		return $uploaded;
 	}
-
-	
 }

@@ -5,11 +5,11 @@ namespace Migration;
 defined('FCPATH') or die("Direct script access denied");
 
 use \Core\Database;
+
 /**
  * Migration class
  */
-class Migration extends Database
-{
+class Migration extends Database {
 	private $columns 		= [];
 	private $keys 			= [];
 	private $data 			= [];
@@ -18,10 +18,8 @@ class Migration extends Database
 	private $uniqueKeys 	= [];
 	private $fullTextKeys 	= [];
 
-	public function createTable(string $table)
-	{
-		if(!empty($this->columns))
-		{
+	public function createTable(string $table) {
+		if(!empty($this->columns)) {
 
 			$query = "CREATE TABLE IF NOT EXISTS $table (";
 
@@ -58,16 +56,13 @@ class Migration extends Database
 			$this->fullTextKeys = [];
 
 			echo "\n\rTable $table created successfully!";
-		}else{
-
+		} else {
 			echo "\n\rColumn data not found! Could not create table: $table";
 		}
 	}
 
-	public function insert(string $table)
-	{
-		if(!empty($this->data) && is_array($this->data))
-		{
+	public function insert(string $table) {
+		if(!empty($this->data) && is_array($this->data)) {
 
 			foreach ($this->data as $row) {
 				
@@ -81,49 +76,39 @@ class Migration extends Database
 
 			$this->data = [];
 			echo "\n\rData inserted successfully in table: $table";
-		}else
-		{
+		} else {
 			echo "\n\rRow data not found! No data inserted in table: $table";
 		}
 	}
 
-	public function addColumn(string $column)
-	{
+	public function addColumn(string $column) {
 		$this->columns[] = $column;
 	}
 
-	public function addKey(string $key)
-	{
+	public function addKey(string $key) {
 		$this->keys[] = $key;
 	}
 
-	public function addPrimaryKey(string $primaryKey)
-	{
+	public function addPrimaryKey(string $primaryKey) {
 		$this->primaryKeys[] = $primaryKey;
 	}
 
-	public function addUniqueKey(string $key)
-	{
-		$this->$uniqueKeys[] = $key;
+	public function addUniqueKey(string $key) {
+		$this->uniqueKeys[] = $key;
 	}
 
-	public function addFullTextKey(string $key)
-	{
+	public function addFullTextKey(string $key) {
 		$this->fullTextKeys[] = $key;
 	}
 
-	public function addData(array $data)
-	{
+	public function addData(array $data) {
 		$this->data[] = $data;
 	}
 
-	public function dropTable(string $table)
-	{
+	public function dropTable(string $table) {
 		$query = "DROP TABLE IF EXISTS $table ";
 		$this->query($query);
 
 		echo "\n\rTable $table deleted successfully!";
 	}
-
-	
 }

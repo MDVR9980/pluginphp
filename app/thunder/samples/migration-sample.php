@@ -10,8 +10,7 @@ defined('FCPATH') or die("Direct script access denied");
 class {CLASS_NAME} extends Migration
 {
 
-	public function up()
-	{
+	public function up() {
 
 		$this->addColumn('id int unsigned auto_increment');
 		$this->addColumn('column1 varchar(255) null');
@@ -45,8 +44,7 @@ class {CLASS_NAME} extends Migration
 
 	}
 
-	public function down()
-	{
+	public function down() {
 		$this->dropTable('{TABLE_NAME}');
 	}
 }

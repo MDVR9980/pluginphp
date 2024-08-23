@@ -7,18 +7,15 @@ defined('FCPATH') or die("Direct script access denied");
 /**
  * Thunder class
  */
-class Thunder
-{
+class Thunder {
 
-	public function make(array $args)
-	{
+	public function make(array $args) {
 
 		$action 		= $args[1] ?? null;
 		$folder 		= $args[2] ?? null;
 		$class_name 	= $args[3] ?? null;
 
-		if($action == 'make:plugin')
-		{
+		if($action == 'make:plugin') {
 			$original_folder = $folder;
 			$folder = 'plugins/'.$folder;
 
@@ -58,9 +55,9 @@ class Thunder
 			$plugin_file = $folder . '/plugin.php';
 			$plugin_file_source = 'app/thunder/samples/plugin-sample.php';
 			
-			if(file_exists($plugin_file_source)){
+			if(file_exists($plugin_file_source)) {
 				copy($plugin_file_source, $plugin_file);
-			}else{
+			} else {
 				$this->message("plugin sample file not found in: ".$plugin_file_source);
 			}
 
@@ -68,9 +65,9 @@ class Thunder
 			$controller_file = $folder . '/controllers/controller.php';
 			$controller_file_source = 'app/thunder/samples/controller-sample.php';
 			
-			if(file_exists($controller_file_source)){
+			if(file_exists($controller_file_source)) {
 				copy($controller_file_source, $controller_file);
-			}else{
+			} else {
 				$this->message("controller sample file not found in: ".$controller_file_source);
 			}
 
@@ -78,9 +75,9 @@ class Thunder
 			$view_file = $folder . '/views/view.php';
 			$view_file_source = 'app/thunder/samples/view-sample.php';
 			
-			if(file_exists($view_file_source)){
+			if(file_exists($view_file_source)) {
 				copy($view_file_source, $view_file);
-			}else{
+			} else {
 				$this->message("view sample file not found in: ".$view_file_source);
 			}
  
@@ -88,9 +85,9 @@ class Thunder
 			$js_file = $folder . '/assets/js/plugin.js';
 			$js_file_source = 'app/thunder/samples/js-sample.js';
 			
-			if(file_exists($js_file_source)){
+			if(file_exists($js_file_source)) {
 				copy($js_file_source, $js_file);
-			}else{
+			} else {
 				$this->message("js sample file not found in: ".$js_file_source);
 			}
 
@@ -98,9 +95,9 @@ class Thunder
 			$css_file = $folder . '/assets/css/style.css';
 			$css_file_source = 'app/thunder/samples/css-sample.css';
 			
-			if(file_exists($css_file_source)){
+			if(file_exists($css_file_source)) {
 				copy($css_file_source, $css_file);
-			}else{
+			} else {
 				$this->message("css sample file not found in: ".$css_file_source);
 			}
  			
@@ -108,18 +105,17 @@ class Thunder
 			$config_file = $folder . '/config.json';
 			$config_file_source = 'app/thunder/samples/config-sample.json';
 			
-			if(file_exists($config_file_source)){
+			if(file_exists($config_file_source)) {
 				copy($config_file_source, $config_file);
-			}else{
+			} else {
 				$this->message("config sample file not found in: ".$config_file_source);
 			}
  
  			$this->message("Plugin creation complete! Plugin folder: ".$folder);	
 
-		}else
-		if($action == 'make:migration')
-		{
-			$original_folder = $folder;
+		} else
+		if($action == 'make:migration') {
+			$original_folder = $folder; 
 			$folder = 'plugins/'.$folder.'/';
 
 			if(!file_exists($folder))
@@ -151,9 +147,8 @@ class Thunder
 
 			$this->message("Migration file created. Filename: ".$filename,true);
 
-		}else
-		if($action == 'make:model')
-		{
+		} else
+		if($action == 'make:model') {
 
 			$original_folder = $folder;
 			$folder = 'plugins/'.$folder.'/';
@@ -182,38 +177,33 @@ class Thunder
 			$content = str_replace("{TABLE_NAME}", $table_name, $content);
 			$content = str_replace("{CLASS_NAME}", $class_name, $content);
 
-			$namespace = str_replace("-"," ", $original_folder);
+			$namespace = str_replace("-", " ", $original_folder);
 			$namespace = ucwords($namespace);
-			$namespace = str_replace(" ","", $namespace);
-			$content = str_replace("{NAMESPACE}", $original_folder, $content);
+			$namespace = str_replace(" ", "", $namespace);
+			$content = str_replace("{NAMESPACE}", $namespace, $content);
 
 			$filename = $model_folder . $class_name . '.php';
 			file_put_contents($filename, $content);
 
 			$this->message("Model file created. Filename: ".$filename,true);
 
-		}else
-		{
+		} else {
 			$this->message("Unknown command ". $action);
 		}
-		
 	}
 
-	public function migrate(array $args)
-	{
+	public function migrate(array $args) {
 		$action 		= $args[1] ?? null;
 		$folder 		= $args[2] ?? null;
 		$file_name 		= $args[3] ?? null;
 
-		if($action == 'migrate' || $action == 'migrate:rollback')
-		{
+		if($action == 'migrate' || $action == 'migrate:rollback') {
 			$folder = 'plugins/'.$folder.'/migrations/';
 
 			if(!is_dir($folder))
 				$this->message("No migration files found in that location",true);
 
-			if(!empty($file_name))
-			{
+			if(!empty($file_name)) {
 				/** run single file **/
 				$file = $folder . $file_name;
 
@@ -227,27 +217,22 @@ class Thunder
 
 				$myclass = new ("\Migration\\$class_name");
 
-				if($action == 'migrate')
-				{
+				if($action == 'migrate') {
 					$myclass->up();
-				}else
-				{
+				} else {
 					$myclass->down();
 				}
 
 				$this->message("Migration complete!");
 				$this->message("File: " . $file_name);
 
-			}else
-			{
+			} else {
 				/** get all files from folder **/
 				$files = glob($folder.'*.php');
 
-				if(!empty($files))
-				{
+				if(!empty($files)) {
 
-					foreach ($files as $file)
-					{
+					foreach ($files as $file) {
 
 						$this->message("Migrating file:". $file . "\n\r");
 
@@ -259,35 +244,28 @@ class Thunder
 
 						$myclass = new ("\Migration\\$class_name");
 
-						if($action == 'migrate')
-						{
+						if($action == 'migrate') {
 							$myclass->up();
-						}else
-						{
+						} else {
 							$myclass->down();
 						}
-
 					}
 
 					$this->message("Migration complete!");
 
-				}else
-				{
+				} else {
 					$this->message("No migration files found in specified folder");
 				}
 			}
-		}else
-		if($action == 'migrate:refresh')
-		{
+		} else
+		if($action == 'migrate:refresh') {
 
 			$this->migrate(['thunder','migrate:rollback',$folder,$file_name]);
 			$this->migrate(['thunder','migrate',$folder,$file_name]);
-
 		}
 	}
 	
-	public function help(string|array $version):void
-	{
+	public function help(string|array $version):void {
 
 		$version = is_array($version) ? $version[0] : $version;
 
@@ -308,8 +286,7 @@ class Thunder
 			";
 	}
 
-	private function message(string $message, bool $die = false):void 
-	{
+	private function message(string $message, bool $die = false):void {
 		echo "\n\r" . ucfirst($message);
 		ob_flush();
 

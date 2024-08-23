@@ -1,7 +1,7 @@
 {
 	"name":"Home Page",
 	"id":"home-page",
-	"author":"Eathorne",
+	"author":"MDVR9980",
 	"author website":"www.freephptutorials.com",
 	"thumbnail":"thumbnail.jpg",
 	"active":true,
@@ -13,5 +13,4 @@
 	"dependencies": {
 
 	}
-
 }

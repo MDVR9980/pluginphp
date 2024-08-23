@@ -1,10 +1,13 @@
 <?php
 
-$user = new \Basic_auth\User;
+$user = new \BasicAuth\User;
 
-if($csrf = csrf_verify($req->post()) && $user->validate_insert($req->post())) {
+$csrf = csrf_verify($req->post());
+$isValid = $user->validate_insert($req->post());
+
+if($csrf && $isValid) {
     $postdata = $req->post();
-    $postdata['data-created'] = date('Y-m-d H:i:s');
+    $postdata['data_created'] = date('Y-m-d H:i:s');
     $postdata['password'] = password_hash($postdata['password'], PASSWORD_DEFAULT);
     $user->insert($postdata);
     message('Signup complite! Please login to continue ');

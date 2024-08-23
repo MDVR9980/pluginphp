@@ -1,38 +1,31 @@
 <?php
 
-function set_value(string|array $key, mixed $value = ''):bool
-{
+
+function set_value(string|array $key, mixed $value = ''):bool {
 	global $USER_DATA;
 
 	$called_from = debug_backtrace();
 	$ikey = array_search(__FUNCTION__, array_column($called_from, 'function'));
 	$path = get_plugin_dir(debug_backtrace()[$ikey]['file']) . 'config.json';
 
-	if(file_exists($path))
-	{
+	if(file_exists($path)) {
 		$json = json_decode(file_get_contents($path));
 		$plugin_id = $json->id;
 
-		if(is_array($key))
-		{
+		if(is_array($key)) {
 			foreach ($key as $k => $value) {
 				
 				$USER_DATA[$plugin_id][$k] = $value;
 			}
-		}else
-		{
+		} else {
 			$USER_DATA[$plugin_id][$key] = $value;
 		}
-
-
 		return true;
 	}
-
 	return false;
 }
 
-function plugin_id():string
-{
+function plugin_id():string {
 	$called_from = debug_backtrace();
 	$ikey = array_search(__FUNCTION__, array_column($called_from, 'function'));
 	$path = get_plugin_dir(debug_backtrace()[$ikey]['file']) . 'config.json';
@@ -41,16 +34,14 @@ function plugin_id():string
 	return $json->id ?? '';
 }
 
-function get_value(string $key = ''):mixed
-{
+function get_value(string $key = ''):mixed {
 	global $USER_DATA;
 
 	$called_from = debug_backtrace();
 	$ikey = array_search(__FUNCTION__, array_column($called_from, 'function'));
 	$path = get_plugin_dir(debug_backtrace()[$ikey]['file']) . 'config.json';
 
-	if(file_exists($path))
-	{
+	if(file_exists($path)) {
 		$json = json_decode(file_get_contents($path));
 		$plugin_id = $json->id;
 
@@ -59,60 +50,45 @@ function get_value(string $key = ''):mixed
 
 		return !empty($USER_DATA[$plugin_id][$key]) ? $USER_DATA[$plugin_id][$key] : null;
 	}
-
 	return null;
-
 }
 
-function APP($key = '')
-{
+function APP($key = '') {
 	global $APP;
 
-	if(!empty($key))
-	{
+	if(!empty($key)) {
 		return !empty($APP[$key]) ? $APP[$key] : null;
-	}else{
-
+	} else {
 		return $APP;
 	}
-
-	return null;
 }
 
-function show_plugins()
-{
+function show_plugins() {
 	global $APP;
 	
 	$names = array_column($APP['plugins'], 'name');
 	dd($names ?? []);
-
 }
 
 /**splits the query string in the url**/
-function split_url($url)
-{
+function split_url($url) {
 	return explode("/", trim($url,'/'));
 }
 
-function URL($key = '')
-{
+function URL($key = '') {
 	global $APP;
 
-	if(is_numeric($key) || !empty($key))
-	{
-		if(!empty($APP['URL'][$key]))
-		{
+	if(is_numeric($key) || !empty($key)) {
+		if(!empty($APP['URL'][$key])) {
 			return $APP['URL'][$key];
 		}
-	}else{
+	} else {
 		return $APP['URL'];
 	}
-
 	return '';
 }
 
-function get_plugin_folders()
-{
+function get_plugin_folders() {
 	$plugins_folder = 'plugins/';
 	$res = [];
 	$folders = scandir($plugins_folder);
@@ -120,60 +96,48 @@ function get_plugin_folders()
 		if($folder != '.' && $folder != '..' && is_dir($plugins_folder . $folder))
 			$res[] = $folder;
 	}
-
 	return $res;
 }
 
-function load_plugins($plugin_folders)
-{
+function load_plugins($plugin_folders) {
 	global $APP;
 	$loaded = false;
 	
 	foreach ($plugin_folders as $folder) {
 		
 		$file = 'plugins/' . $folder . '/config.json';
-		if(file_exists($file))
-		{
+		if(file_exists($file)) {
 			$json = json_decode(file_get_contents($file));
 			
-			if(is_object($json) && isset($json->id))
-			{
-				if(!empty($json->active))
-				{
+			if(is_object($json) && isset($json->id)) {
+				if(!empty($json->active)) {
 					$file = 'plugins/' . $folder . '/plugin.php';
-					if(file_exists($file) && valid_route($json))
-					{
+					if(file_exists($file) && valid_route($json)) {
 						$json->index = $json->index ?? 1;
 						$json->index_file = $file;
 						$json->path = 'plugins/' . $folder . '/';
 						$json->http_path = ROOT . '/' . $json->path;
 
 						$APP['plugins'][] = $json;
-
 					}
 				}
 			}
 		}
 	}
 
-	if(!empty($APP['plugins']))
-	{
+	if(!empty($APP['plugins'])) {
 		$APP['plugins'] = sort_plugins($APP['plugins']);
-		foreach ($APP['plugins'] as $json)
-		{
-			if(file_exists($json->index_file))
-			{
+		foreach ($APP['plugins'] as $json) {
+			if(file_exists($json->index_file)) {
 				require_once $json->index_file;
 				$loaded = true;
 			}
 		}
 	}
-
 	return $loaded;
 }
 
-function sort_plugins(array $plugins):array
-{
+function sort_plugins(array $plugins):array {
 	$to_sort = [];
 	$sorted  = [];
 
@@ -186,32 +150,26 @@ function sort_plugins(array $plugins):array
 	foreach ($to_sort as $key => $value) {
 		$sorted[] = $plugins[$key];
 	}
-
 	return $sorted;
 }
 
-function valid_route(object $json):bool
-{
-	if(!empty($json->routes->off) && is_array($json->routes->off))
-	{
+function valid_route(object $json):bool {
+	if(!empty($json->routes->off) && is_array($json->routes->off)) {
 		if(in_array(page(), $json->routes->off))
 			return false;
 	}
 
-	if(!empty($json->routes->on) && is_array($json->routes->on))
-	{
+	if(!empty($json->routes->on) && is_array($json->routes->on)) {
 		if($json->routes->on[0] == 'all')
 			return true;
 
 		if(in_array(page(), $json->routes->on))
 			return true;
 	}
-
 	return false;
 }
 
-function add_action(string $hook, mixed $func, int $priority = 10):bool
-{
+function add_action(string $hook, mixed $func, int $priority = 10):bool {
 
 	global $ACTIONS;
 
@@ -224,22 +182,18 @@ function add_action(string $hook, mixed $func, int $priority = 10):bool
 	return true;
 }
 
-function do_action(string $hook, array $data = [])
-{
+function do_action(string $hook, array $data = []) {
 	global $ACTIONS;
 
-	if(!empty($ACTIONS[$hook]))
-	{
+	if(!empty($ACTIONS[$hook])) {
 		ksort($ACTIONS[$hook]);
 		foreach ($ACTIONS[$hook] as $key => $func) {
 			$func($data);
 		}
 	}
-
 }
 
-function add_filter(string $hook, mixed $func, int $priority = 10):bool
-{
+function add_filter(string $hook, mixed $func, int $priority = 10):bool {
 	global $FILTER;
 
 	while(!empty($FILTER[$hook][$priority])) {
@@ -251,89 +205,75 @@ function add_filter(string $hook, mixed $func, int $priority = 10):bool
 	return true;
 }
 
-function do_filter(string $hook, mixed $data = ''):mixed
-{
+function do_filter(string $hook, mixed $data = ''):mixed {
 	global $FILTER;
 
-	if(!empty($FILTER[$hook]))
-	{
+	if(!empty($FILTER[$hook])) {
 		ksort($FILTER[$hook]);
 		foreach ($FILTER[$hook] as $key => $func) {
 			$data = $func($data);
 		}
 	}
-
 	return $data;
 }
 
-function dd($data)
-{
+function dd($data) {
 	echo "<pre><div style='margin:1px;background-color:#444;color:white;padding:5px 10px'>";
 	print_r($data);
 	echo "</div></pre>";
 }
 
-function page()
-{
+function page() {
 	return URL(0);
 }
 
-function redirect($url)
-{
+function redirect($url) {
 	header("Location: ". ROOT .'/'. $url);
 	die;
 }
 
-function plugin_path(string $path = '')
-{
+function plugin_path(string $path = '') {
 	$called_from = debug_backtrace();
 	$key = array_search(__FUNCTION__, array_column($called_from, 'function'));
 	return get_plugin_dir(debug_backtrace()[$key]['file']) . $path;
 }
 
-function plugin_http_path(string $path = '')
-{
+function plugin_http_path(string $path = '') {
 	$called_from = debug_backtrace();
 	$key = array_search(__FUNCTION__, array_column($called_from, 'function'));
 	
 	return ROOT . DIRECTORY_SEPARATOR . get_plugin_dir(debug_backtrace()[$key]['file']) . $path;
 }
 
-function get_plugin_dir(string $filepath):string
-{
+function get_plugin_dir(string $filepath):string {
 
 	$path = "";
 
 	$basename = basename($filepath);
 	$path = str_replace($basename, "", $filepath);
 
-	if(strstr($path, DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR))
-	{
+	if(strstr($path, DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR)) {
 		$parts = explode(DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR, $path);
 		$parts = explode(DIRECTORY_SEPARATOR, $parts[1]);
 		$path = 'plugins' . DIRECTORY_SEPARATOR . $parts[0].DIRECTORY_SEPARATOR;
-
 	}
 
 	return $path;
 }
 
-function user_can(?string $permission):bool
-{
+function user_can(?string $permission):bool {
 	if(empty($permission)) return true;
 
 	$ses = new \Core\Session;
 	
-	if($permission == 'logged_in')
-	{
+	if($permission == 'logged_in') {
 		if($ses->is_logged_in())
 			return true;
 
 		return false;
 	}
 
-	if($permission == 'not_logged_in')
-	{
+	if($permission == 'not_logged_in') {
 		if(!$ses->is_logged_in())
 			return true;
 
@@ -356,8 +296,7 @@ function user_can(?string $permission):bool
 	return false;
 }
 
-function old_value(string $key, string $default = '',string $type = 'post'):string
-{
+function old_value(string $key, string $default = '',string $type = 'post'):string {
 	$array = $_POST;
 	if($type == 'get')
 		$array = $_GET;
@@ -368,18 +307,15 @@ function old_value(string $key, string $default = '',string $type = 'post'):stri
 	return $default;
 }
 
-function old_select(string $key, string $value, string $default = '',string $type = 'post'):string
-{
+function old_select(string $key, string $value, string $default = '',string $type = 'post'):string {
 	$array = $_POST;
 	if($type == 'get')
 		$array = $_GET;
 
-	if(!empty($array[$key]))
-	{
+	if(!empty($array[$key])) {
 		if($array[$key] == $value)
 			return ' selected ';
-	}else
-	{
+	} else {
 		if($default == $value)
 			return ' selected ';
 	}
@@ -387,18 +323,15 @@ function old_select(string $key, string $value, string $default = '',string $typ
 	return '';
 }
 
-function old_checked(string $key, string $value, string $default = '',string $type = 'post'):string
-{
+function old_checked(string $key, string $value, string $default = '',string $type = 'post'):string {
 	$array = $_POST;
 	if($type == 'get')
 		$array = $_GET;
 
-	if(!empty($array[$key]))
-	{
+	if(!empty($array[$key])) {
 		if($array[$key] == $value)
 			return ' checked ';
-	}else
-	{
+	} else {
 		if($default == $value)
 			return ' checked ';
 	}
@@ -406,8 +339,7 @@ function old_checked(string $key, string $value, string $default = '',string $ty
 	return '';
 }
 
-function csrf(string $sesKey = 'csrf', int $hours = 1):string
-{
+function csrf(string $sesKey = 'csrf', int $hours = 1):string {
 	$key = '';
 
 	$ses = new \Core\Session;
@@ -423,15 +355,15 @@ function csrf(string $sesKey = 'csrf', int $hours = 1):string
 }
 
 
-function csrf_verify(array $post, string $sesKey = 'csrf'):mixed
-{
+function csrf_verify(array $post, string $sesKey = 'csrf'):mixed {
+	
 	if(empty($post[$sesKey]))
 		return false;
 
 	$ses = new \Core\Session;
 	$data = $ses->get($sesKey);
-	if(is_array($data))
-	{
+
+	if(is_array($data)) {
 		if($data['key'] !== $post[$sesKey])
 			return false;
 
@@ -439,15 +371,13 @@ function csrf_verify(array $post, string $sesKey = 'csrf'):mixed
 			return true;
 
 		$ses->pop($sesKey);
-		
 	}
 
 	return false;
 }
 
 
-function get_image(string $path = '', string $type = 'post')
-{
+function get_image(string $path = '', string $type = 'post') {
 	if(file_exists($path))
 		return ROOT . '/' . $path;
 	
@@ -463,26 +393,21 @@ function get_image(string $path = '', string $type = 'post')
 	return ROOT . '/assets/images/no_image.jpg';
 }
 
-function esc(?string $str):?string
-{
+function esc(?string $str):?string {
 	return htmlspecialchars($str);
 }
 
-function get_date(string $date):string
-{
+function get_date(string $date):string {
 	return date("jS M, Y", strtotime($date));
 }
 
-function message(string $msg = '', bool $erase = false):?string
-{
+function message(string $msg = '', bool $erase = false):?string {
 	$ses = new \Core\Session;
 
-	if(!empty($msg))
-	{
+	if(!empty($msg)) {
 		$ses->set('message',$msg);
-	}else
-	if(!empty($ses->get('message')))
-	{
+	} else
+	if(!empty($ses->get('message'))) {
 		$msg = $ses->get('message');
 
 		if($erase)
@@ -493,4 +418,3 @@ function message(string $msg = '', bool $erase = false):?string
 
 	return '';
 }
-

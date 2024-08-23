@@ -1,14 +1,14 @@
 {
 	"name":"Header footer",
 	"id":"header-footer",
-	"author":"Eathorne",
+	"author":"MDVR9980",
 	"author website":"",
 	"thumbnail":"thumbnail.jpg",
 	"active":true,
 	"index":3,
 	"routes": {
 		"on":["all"],
-		"off":[]
+		"off":["admin"]
 	},
 	"dependencies": {
 

@@ -15,7 +15,7 @@ set_value([
 ]);
 
 /** set user permissions for this plugin **/
-add_filter('permissions',function($permissions){
+add_filter('permissions',function($permissions) {
 
 	$permissions[] = 'my_permission';
 
@@ -24,7 +24,7 @@ add_filter('permissions',function($permissions){
 
 
 /** run this after a form submit **/
-add_action('controller',function(){
+add_action('controller',function() {
 
 	$vars = get_value();
 
@@ -33,7 +33,7 @@ add_action('controller',function(){
 
 
 /** displays the view file **/
-add_action('view',function(){
+add_action('view',function() {
 
 	$vars = get_value();
 
@@ -42,16 +42,13 @@ add_action('view',function(){
 
 
 /** for manipulating data after a query operation **/
-add_filter('after_query',function($data){
+add_filter('after_query',function($data) {
 
-	
 	if(empty($data['result']))
 		return $data;
 
 	foreach ($data['result'] as $key => $row) {
-		
-
-
+	
 	}
 
 	return $data;

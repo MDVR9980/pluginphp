@@ -7,8 +7,7 @@ defined('ROOT') or die("Direct script access denied");
 /**
  * Pager class
  */
-class Pager
-{
+class Pager {
 	
 	public $links 		= [];
 	public $limit 		= 10;
@@ -17,8 +16,7 @@ class Pager
 	public $end 		= 1;
 	public $page_number = 1;
 
-	public function __construct(int $limit = 10, $extras = 1)
-	{
+	public function __construct(int $limit = 10, $extras = 1) {
 		$page_number = !empty($_GET['page']) ? (int)$_GET['page'] : 1;
 		$page_number = $page_number < 1 ? 1 : $page_number;
 
@@ -44,8 +42,7 @@ class Pager
 
 	}
 
-	public function display()
-	{
+	public function display() {
 		?>
 		<nav aria-label="Page navigation example">
 		  <ul class="pagination">
@@ -63,8 +60,7 @@ class Pager
 		<?php
 	}
 
-	public function displayTailwind():string
-	{
+	public function displayTailwind() {
 		?>
 		<nav aria-label="Page navigation example">
 		  <ul class="pagination">
@@ -82,8 +78,7 @@ class Pager
 		<?php
 	}
 
-	public function displayCustom():string
-	{
+	public function displayCustom() {
 		?>
 		<nav aria-label="Page navigation example">
 		  <ul class="pagination">
@@ -100,6 +95,4 @@ class Pager
 		</nav>
 		<?php
 	}
-
-	
 }

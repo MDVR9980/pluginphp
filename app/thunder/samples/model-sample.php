@@ -7,8 +7,7 @@ defined('ROOT') or die("Direct script access denied");
 /**
  * {CLASS_NAME} class
  */
-class {CLASS_NAME} extends Model
-{
+class {CLASS_NAME} extends Model {
 
 	protected $table = '{TABLE_NAME}s';
 	public $primary_key = 'id';
@@ -26,28 +25,21 @@ class {CLASS_NAME} extends Model
 	];
 
 
-	public function validate_insert(array $data):bool
-	{
+	public function validate_insert(array $data):bool {
 
- 		if(empty($data['email']))
- 		{
+ 		if(empty($data['email'])) {
  			$this->errors['email'] = 'Email is required';
- 		}else
- 		if($this->first(['email'=>$data['email']]))
- 		{
+ 		} else
+ 		if($this->first(['email'=>$data['email']])) {
  			$this->errors['email'] = 'That email is already in use';
- 		}else
- 		if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL))
- 		{
+ 		} else
+ 		if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL)) {
  			$this->errors['email'] = 'Email is not valid';
  		}
- 		
-
  		return empty($this->errors);
 	}
 
-	public function validate_update(array $data):bool
-	{
+	public function validate_update(array $data):bool {
 		
 		$email_arr = [
 			'email'=>$data['email']
@@ -56,19 +48,15 @@ class {CLASS_NAME} extends Model
 			$this->primary_key => $data[$this->primary_key] ?? 0
 		];
 		
-		if(empty($data['email']))
- 		{
+		if(empty($data['email'])) {
  			$this->errors['email'] = 'Email is required';
- 		}else
- 		if($this->first($email_arr,$email_arr_not))
- 		{
+ 		} else
+ 		if($this->first($email_arr,$email_arr_not)) {
  			$this->errors['email'] = 'That email is already in use';
- 		}else 		
- 		if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL))
- 		{
+ 		} else 		
+ 		if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL)) {
  			$this->errors['email'] = 'Email is not valid';
  		}
-
 		return empty($this->errors);
 	}
 }

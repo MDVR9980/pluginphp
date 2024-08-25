@@ -3,8 +3,6 @@
 /**
  * Plugin name: 
  * Description: 
- * 
- * 
  **/
 
 set_value([
@@ -53,5 +51,3 @@ add_filter('after_query',function($data) {
 
 	return $data;
 });
-
-

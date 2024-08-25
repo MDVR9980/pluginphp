@@ -13,9 +13,15 @@
 		<h3 class="text-center mt-4">Login</h3>
 		<div class="mb-4 text-muted text-center"><i>please login to continue</i></div>
 
-		<?php if(message()):?>
+		<?php if(message_success()):?>
 			<div class="alert alert-danger text-center">
-				<?=esc(message('',true))?>
+				<?=esc(message_success('',true))?>
+			</div>
+		<?php endif?>
+
+		<?php if(message_fail()):?>
+			<div class="alert alert-danger text-center">
+				<?=esc(message_fail('',true))?>
 			</div>
 		<?php endif?>
 

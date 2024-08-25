@@ -12,7 +12,7 @@
 				redirect('home');
 			}
 		}
-		message('Wrong email or password');
+		message_fail('Wrong email or password');
 	} else {
-		message('Form expired! Please refresh');
+		message_fail('Form expired! Please refresh');
 	}

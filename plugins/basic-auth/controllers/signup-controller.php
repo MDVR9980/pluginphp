@@ -10,7 +10,7 @@ if($csrf && $isValid) {
     $postdata['data_created'] = date('Y-m-d H:i:s');
     $postdata['password'] = password_hash($postdata['password'], PASSWORD_DEFAULT);
     $user->insert($postdata);
-    message('Signup complite! Please login to continue ');
+    message_success('Signup complite! Please login to continue ');
     redirect($vars['login_page']);
 } else {
     if(!$csrf)

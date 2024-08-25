@@ -26,7 +26,7 @@ $PLUGINS = get_plugin_folders();
 if(!load_plugins($PLUGINS))
 	die("<center><h1 style='font-family:tahoma'>No plugins were found! Please put at least one plugin in the plugins folder</h1></center>");
 
-$APP['permissions'] = do_filter('user_permissions',$APP['permissions']);
+$APP['permissions'] = do_filter('permissions',$APP['permissions']);
 
 /*load the app*/
 $app = new \Core\App();

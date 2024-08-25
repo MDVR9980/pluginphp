@@ -80,62 +80,68 @@ class Request {
 
 		$uploaded = empty($key) ? [] : '';
 
-		if(!empty($this->files())) {
-			$get_one = false;
-			if(!empty($key))
-				$get_one = true;
+		$filenames = array_column($this->files(), 'name');
 
-			if($get_one && empty($this->files()[$key])) {
-				$this->upload_errors['name'] = 'File not found';
-				return '';
+		$found = false;
+		foreach($filenames as $i => $value) {
+			if(!empty($value)) {
+				$found = true;
+				break;
+			}
+		}
+		
+		if(!$found)
+		    return $uploaded;
+
+		$get_one = false;
+		if(!empty($key))
+			$get_one = true;
+
+		$uploaded = [];
+
+		foreach ($this->files() as $ikey => $file_arr) {
+			
+			if($file_arr['error'] > 0) {
+				$this->upload_error_code = $file_arr['error'];
+				$this->upload_errors[$ikey] = "An error occured with file: ". $file_arr['name'];
+				continue;
 			}
 
-			$uploaded = [];
-			foreach ($this->files() as $key => $file_arr) {
-				
-				if($file_arr['error'] > 0) {
-					$this->upload_error_code = $file_arr['error'];
-					$this->upload_errors[] = "An error occured with file: ". $file_arr['name'];
-					continue;
-				}
-
-				if(!in_array($file_arr['type'], $this->upload_file_types)) {
-					$this->upload_errors[] = "Invalid file type: ". $file_arr['name'];
-					continue;
-				}
-
-				if($file_arr['size'] > ($this->upload_max_size * 1024 * 1024)) {
-					$this->upload_errors[] = "File too large: ". $file_arr['name'];
-					continue;
-				}
-				
-				$folder = trim($this->upload_folder,'/') . '/';
-				$destination = $folder . $file_arr['name'];
-
-				$num = 0;
-				while(file_exists($destination) && $num < 10) {
-					$num++;
-					$ext = explode(".", $destination);
-					$ext = end($ext);
-
-					$destination = preg_replace("/\.$ext$/", "_" . rand(0,99) . ".$ext", $destination);
-				}
-
-				if(!is_dir($folder))
-					mkdir($folder,0777,true);
-
-				move_uploaded_file($file_arr['tmp_name'], $destination);
-				$uploaded[] = $destination;
-
-				if($get_one)
-					break;
+			if(!in_array($file_arr['type'], $this->upload_file_types)) {
+				$this->upload_errors[$ikey] = "Invalid file type: ". $file_arr['name'];
+				continue;
 			}
+
+			if($file_arr['size'] > ($this->upload_max_size * 1024 * 1024)) {
+				$this->upload_errors[$ikey] = "File too large: ". $file_arr['name'];
+				continue;
+			}
+			
+			$folder = trim($this->upload_folder,'/') . '/';
+			$destination = $folder . $file_arr['name'];
+
+			$num = 0;
+			while(file_exists($destination) && $num < 10) {
+				$num++;
+				$ext = explode(".", $destination);
+				$ext = end($ext);
+
+				$destination = preg_replace("/\.$ext$/", "_" . rand(0,99) . ".$ext", $destination);
+			}
+
+			if(!is_dir($folder))
+				mkdir($folder,0777,true);
+
+			move_uploaded_file($file_arr['tmp_name'], $destination);
+			$uploaded[] = $destination;
 
 			if($get_one)
-				return $uploaded[0] ?? '';
+				break;
+		}
+
+		if($get_one)
+			return $uploaded[0] ?? '';
 
 			return $uploaded;
 		}
-		return $uploaded;
-	}
 }

@@ -16,6 +16,7 @@ class Database {
 	public $error 				= '';
 	public $has_error 			= false;
 	public $table_exists_db 	= '';
+	public $missing_tables      = '';
 
 	private function connect() {
 
@@ -98,6 +99,7 @@ class Database {
 
 	public function table_exists(string|array $mytables):bool {
 		global $APP;
+		$this->missing_tables = [];
 
 		if(empty($APP['tables'])) {
 
@@ -109,8 +111,16 @@ class Database {
 			$query = "SELECT TABLE_NAME AS tables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '".$this->table_exists_db."'";
  
 			$res = $this->query($query);
-			$result = $APP['tables'] = $res['result'];
-		}else {
+
+			if(isset($res['result'])) {
+				$result = $APP['tables'] = $res['result'];
+			} else {
+				$this->error = 'Query did not return expected result structure.';
+				$this->has_error = true;
+				return false;
+			}
+			
+		} else {
 			$result = $APP['tables'];
 		}
 		
@@ -122,8 +132,12 @@ class Database {
 
 			$count = 0;
 			foreach ($mytables as $key => $table) {
-				if(in_array($table, $all_tables))
+				if(in_array($table, $all_tables)) {
 					$count++;
+				} else {
+					$this->missing_tables[] = $table;
+				}
+					
 			}
 			
 			if($count == count($mytables))

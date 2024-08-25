@@ -10,32 +10,29 @@ set_value([
 	'admin_route'	      =>'admin',
 	'plugin_route'	      =>'users',
 	'table'			      => [
-		'users_table'     => 'users',
-		'roles_table'     => 'user_roles',
-		'roles_map_table' => 'user_roles_map',
+		'users_table'    	 => 'users',
+		'roles_table'    	 => 'user_roles',
+		'permissions_table'  => 'role_permissions',
+		'roles_map_table' 	 => 'user_roles_map',
 	],
 ]);
 
-/** add to admin links **/
-add_filter('basic-admin_before_admin_links',function($links) {
 
-	$vars = get_value();
+//** check if all tables exist **/
+$db = new \Core\Database;
+$tables = get_value()['tables'];
 
-	$obj = (object)[];
-	$obj->title = 'Users';
-	$obj->link = ROOT . '/' . $vars['admin_route'] . '/' . $vars['plugin_route'];
-	$obj->icon = 'fa-solid fa-people-group';
-	$obj->parent = 0;
-	$links[] = $obj;
-
-	return $links;
-
-});
+if(!$db->table_exists($tables)) {
+	dd('Missing database tabels in ' . plugin_id() . 'plugin: <br>'  . implode(",", $db->missing_tables));
+	die; 
+}
 
 /** set user permissions for this plugin **/
 add_filter('permissions',function($permissions) {
 
+	$permissions[] = 'all';
 	$permissions[] = 'view_users';
+	$permissions[] = 'view_user_details';
 	$permissions[] = 'add_user';
 	$permissions[] = 'edit_user';
 	$permissions[] = 'delete_user';
@@ -43,16 +40,82 @@ add_filter('permissions',function($permissions) {
 	return $permissions;
 });
 
+/** set permissions for current user **/
+add_filter('user_permissions',function($permissions) {
+
+	$ses = new \Core\Session;
+
+	if($ses->is_logged_in()) {
+
+		$vars = get_value();
+		$db = new \Core\Database();
+	
+		$query = "select * from " . $vars['tables']['roles_table'];
+		$roles = $db->query($query);
+	
+		if(is_array($roles)) {
+	
+		} else {
+			$permissions[] = 'all';
+		}
+		
+	
+		// $permissions[] = 'view_users';
+		// $permissions[] = 'view_user_details';
+		// $permissions[] = 'add_user';
+		// $permissions[] = 'edit_user';
+		// $permissions[] = 'delete_user';
+	}
+		
+	return $permissions;
+});
+
+/** add to admin links **/
+add_filter('basic-admin_before_admin_links',function($links) {
+
+	if(user_can('view_users')) {
+		$vars = get_value();
+
+		$obj = (object)[];
+		$obj->title = 'Users';
+		$obj->link = ROOT . '/' . $vars['admin_route'] . '/' . $vars['plugin_route'];
+		$obj->icon = 'fa-solid fa-people-group';
+		$obj->parent = 0;
+		$links[] = $obj;
+	}
+	return $links;
+});
 
 /** run this after a form submit **/
 add_action('controller',function() {
 
 	$req = new \Core\Request;
 	$vars = get_value();
+	
+	$admin_route = $vars['admin_route'];
+	$plugin_route = $vars['plugin_route'];
 
 	if(URL(1) == $vars['plugin_route'] && $req->posted()) {
 
-		require plugin_path('controllers/controller.php');
+		$user = new \UsersManager\User;
+		$ses = new Core\Session;
+
+		$id = URL(3) ?? null;
+		if($id)
+			$row = $user->first(['id' => $id]);
+		
+		if(URL(2) == 'add') {
+
+			require plugin_path('controllers/add-controller.php');
+		} else 
+		if(URL(2) == 'edit') {
+			
+			require plugin_path('controllers/edit-controller.php');
+		} else
+		if(URL(2) == 'delete') {
+
+			require plugin_path('controllers/delete-controller.php');
+		}
 	}
 });
 
@@ -63,24 +126,38 @@ add_action('basic-admin_main_content',function() {
 	$ses = new \Core\Session;
 	$vars = get_value();
 
+	$admin_route = $vars['admin_route'];
+	$plugin_route = $vars['plugin_route'];
+
 	$user = new \UsersManager\User;
 	
 	if(URL(1) == $vars['plugin_route']) {
+
+		$id = URL(3) ?? null;
+		if($id)
+			$row = $user->first(['id' => $id]);
+
 		if(URL(2) == 'add') {
+
 			require plugin_path('views/add.php');
 		} else 
 		if(URL(2) == 'edit') {
+			
 			require plugin_path('views/edit.php');
 		} else
 		if(URL(2) == 'delete') {
+
 			require plugin_path('views/delete.php');
+		} else
+		if(URL(2) == 'view') {
+
+			require plugin_path('views/view.php');
 		} else {
 			$user->limit = 30;
 			$rows = $user->getAll();
-			require plugin_path('views/view.php');
+			require plugin_path('views/list.php');
 		}
-	}
-		
+	}	
 });
 
 

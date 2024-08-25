@@ -13,10 +13,18 @@ set_value([
 	'logout_page'	=>'logout',
 	'admin_plugin_route'	=>'admin',
 	'tables'		=> [
-
+		'users_table'=> 'users',
 	],
 ]);
 
+//** check if all tables exist **/
+$db = new \Core\Database;
+$tables = get_value()['tables'];
+
+if(!$db->table_exists($tables)) {
+	dd('Missing database tabels in ' . plugin_id() . 'plugin: ' . implode(",", $tables));
+	die; 
+}
 
 /** run this after a form submit **/
 add_action('controller',function() {

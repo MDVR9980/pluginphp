@@ -2,7 +2,6 @@
 	<center>
 		
 		<h3>Footer</h3>
-		<div>Copyright <?=date("Y")?></div>
 	</center>
 </div>
 	<script src="<?=ROOT?>/assets/js/bootstrap.min.js"></script>

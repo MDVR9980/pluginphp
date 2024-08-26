@@ -1,6 +1,6 @@
 <?php if(user_can('add_user')):?>
 	
-	<form method="post" enctype="multipart/form-data">
+	<form onsubmit="submit_form(event)" method="post" enctype="multipart/form-data">
 		
 		<div class="row g-3 col-md-6 mx-auto shadow p-4 rounded">
 		
@@ -37,7 +37,7 @@
 		
 		<div class="mb-3 col-md-6">
 		  <label for="email" class="form-label">Email</label>
-		  <input name="email" value="<?=old_value('email')?>" type="email" class="form-control" id="last_name" placeholder="Email">
+		  <input name="email" value="<?=old_value('email')?>" type="email" class="form-control" id="email" placeholder="Email">
 		
 			<?php if(!empty($errors['email'])):?>
 			  <small class="text-danger"><?=$errors['email']?></small>

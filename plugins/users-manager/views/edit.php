@@ -39,7 +39,7 @@
 				
 				<div class="mb-3 col-md-6">
 				  <label for="email" class="form-label">Email</label>
-				  <input name="email" value="<?=old_value('email',$row->email)?>" type="email" class="form-control" id="last_name" placeholder="Email">
+				  <input name="email" value="<?=old_value('email',$row->email)?>" type="email" class="form-control" id="Email" placeholder="Email">
 				
 					<?php if(!empty($errors['email'])):?>
 					  <small class="text-danger"><?=$errors['email']?></small>

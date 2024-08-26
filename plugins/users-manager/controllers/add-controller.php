@@ -1,6 +1,5 @@
 <?php
 
-
 	$postdata = $req->post();
 	$filedata = $req->files();
 
@@ -47,11 +46,13 @@
 	 			}
 			}
 			message_success("Record added successfully!");
-			redirect($admin_route.'/'.$plugin_route.'/view/'.$user->insert_id);
+			redirect($admin_route. '/' . $plugin_route . '/view/' . $user_id);
 		}
 	}
 
-	if(!$csrf)
+	if(!$csrf) {
+		set_value('errors',$user->errors);
+	}
 		$user->errors['email'] = "Form expired!";
 	
 	set_value('errors',$user->errors);

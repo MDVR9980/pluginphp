@@ -39,7 +39,6 @@ class Pager {
 		$this->links['current'] 	= $current_link;
 		$this->links['first'] 		= $first_link;
 		$this->links['next']	 	= $next_link;
-
 	}
 
 	public function display() {
@@ -94,5 +93,5 @@ class Pager {
 		  </ul>
 		</nav>
 		<?php
-	}
+	}	
 }

@@ -81,26 +81,31 @@ class Request {
 		$uploaded = empty($key) ? [] : '';
 
 		$filenames = array_column($this->files(), 'name');
-
 		$found = false;
-		foreach($filenames as $i => $value) {
+		foreach ($filenames as $i => $value) {
 			if(!empty($value)) {
 				$found = true;
 				break;
 			}
 		}
-		
+
 		if(!$found)
-		    return $uploaded;
+			return $uploaded;
 
 		$get_one = false;
 		if(!empty($key))
 			$get_one = true;
-
+ 
 		$uploaded = [];
 
 		foreach ($this->files() as $ikey => $file_arr) {
 			
+			if($get_one && $ikey != $key)
+				continue;
+			
+			if(empty($file_arr['name']))
+				continue;
+
 			if($file_arr['error'] > 0) {
 				$this->upload_error_code = $file_arr['error'];
 				$this->upload_errors[$ikey] = "An error occured with file: ". $file_arr['name'];
@@ -142,6 +147,6 @@ class Request {
 		if($get_one)
 			return $uploaded[0] ?? '';
 
-			return $uploaded;
-		}
+		return $uploaded;
+	}
 }

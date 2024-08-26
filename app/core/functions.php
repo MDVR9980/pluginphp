@@ -1,6 +1,5 @@
 <?php
 
-
 function set_value(string|array $key, mixed $value = ''):bool {
 	global $USER_DATA;
 
@@ -66,7 +65,7 @@ function APP($key = '') {
 function show_plugins() {
 	global $APP;
 	
-	$names = array_column($APP['plugins'], 'name');
+	$names = array_column($APP['plugins'] ?? [], 'name');
 	dd($names ?? []);
 }
 
@@ -82,21 +81,28 @@ function URL($key = '') {
 		if(!empty($APP['URL'][$key])) {
 			return $APP['URL'][$key];
 		}
-	} else {
+	}else {
 		return $APP['URL'];
 	}
 	return '';
 }
 
 function get_plugin_folders() {
-	$plugins_folder = 'plugins/';
-	$res = [];
-	$folders = scandir($plugins_folder);
-	foreach ($folders as $folder) {
-		if($folder != '.' && $folder != '..' && is_dir($plugins_folder . $folder))
-			$res[] = $folder;
+	global $APP;
+
+	if(empty($APP['all_plugin_folders'])) {
+		$plugins_folder = 'plugins/';
+		$res = [];
+		$folders = scandir($plugins_folder);
+		foreach ($folders as $folder) {
+			if($folder != '.' && $folder != '..' && is_dir($plugins_folder . $folder))
+				$res[] = $folder;
+		}
+		
+		$APP['all_plugin_folders'] = $res;
+		return $res;
 	}
-	return $res;
+	return $APP['all_plugin_folders'];
 }
 
 function load_plugins($plugin_folders) {
@@ -124,6 +130,8 @@ function load_plugins($plugin_folders) {
 						$APP['plugins'][] = $json;
 					}
 				}
+			}else {
+				dd("Invalid json file: " . $file);
 			}
 		}
 	}
@@ -131,24 +139,23 @@ function load_plugins($plugin_folders) {
 	if(!empty($APP['plugins'])) {
 		$APP['plugins'] = sort_plugins($APP['plugins']);
 		foreach ($APP['plugins'] as $json) {
-
-			/** check for plugin dependenciey **/
+			/** check for plugin dependencies **/
 			if(!empty((array)$json->dependencies)) {
 				foreach ((array)$json->dependencies as $plugin_id => $version) {
 					
-					$plugin_data = (plugin_exists($plugin_id));
-					if($plugin_data) {
+					if($plugin_data = plugin_exists($plugin_id)) {
 						$required_version = (int)str_replace(".", "", $version);
-						$existing_version = (int)str_replace(".", "",$plugin_data->version);
+						$existing_version = (int)str_replace(".", "", $plugin_data->version);
 						if($existing_version < $required_version) {
-							dd("Missing plugin dependency:" . $plugin_id . " version: ". $version .", Requested by plugin: " . $json->id);
+							dd("Missing plugin dependency: ". $plugin_id . " version: ".$version.", Requested by plugin: ". $json->id);
 							die;
 						}
 					} else {
-						dd("Missing plugin dependency:" . $plugin_id . " version: ". $version .", Requested by plugin: " . $json->id);
+						dd("Missing plugin dependency: ". $plugin_id . " version: ".$version.", Requested by plugin: ". $json->id);
 						die;
 					}
 				}
+
 			}
 
 			/** load plugin file **/
@@ -158,22 +165,35 @@ function load_plugins($plugin_folders) {
 			}
 		}
 	}
+
 	return $loaded;
 }
 
-function plugin_exists(string $plugin_id): bool | object {
-	
+function plugin_exists(string $plugin_id):bool|object {
 	global $APP;
 
-	$ids = array_column($APP['plugins'], 'id');
-	$key = array_search($plugin_id, $ids);
+	$folders = get_plugin_folders();
+	$plugins = [];
+	foreach ($folders as $folder) {
+		$file = 'plugins/' . $folder . '/config.json';
+		if(file_exists($file)) {
+			$json = json_decode(file_get_contents($file));
+			
+			if(is_object($json) && isset($json->id))
+				if(!empty($json->active))
+					$plugins[] = $json;
+		}
+	}
 
+	$ids = array_column($plugins, 'id');
+	$key = array_search($plugin_id, $ids);
 	if($key !== false) {
-		return $APP['plugins'][$key];
+		return $plugins[$key];
 	}
 
 	return false;
 }
+
 function sort_plugins(array $plugins):array {
 	$to_sort = [];
 	$sorted  = [];
@@ -187,6 +207,7 @@ function sort_plugins(array $plugins):array {
 	foreach ($to_sort as $key => $value) {
 		$sorted[] = $plugins[$key];
 	}
+
 	return $sorted;
 }
 
@@ -203,6 +224,7 @@ function valid_route(object $json):bool {
 		if(in_array(page(), $json->routes->on))
 			return true;
 	}
+
 	return false;
 }
 
@@ -251,6 +273,7 @@ function do_filter(string $hook, mixed $data = ''):mixed {
 			$data = $func($data);
 		}
 	}
+
 	return $data;
 }
 
@@ -293,6 +316,7 @@ function get_plugin_dir(string $filepath):string {
 		$parts = explode(DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR, $path);
 		$parts = explode(DIRECTORY_SEPARATOR, $parts[1]);
 		$path = 'plugins' . DIRECTORY_SEPARATOR . $parts[0].DIRECTORY_SEPARATOR;
+
 	}
 
 	return $path;
@@ -329,9 +353,9 @@ function user_can(?string $permission):bool {
 	
 	if(in_array('all', $APP['user_permissions']))
 		return true;
-
+	
 	if(in_array($permission, $APP['user_permissions']))
-	return true;
+		return true;
 
 	return false;
 }
@@ -359,7 +383,6 @@ function old_select(string $key, string $value, string $default = '',string $typ
 		if($default == $value)
 			return ' selected ';
 	}
-
 	return '';
 }
 
@@ -394,7 +417,6 @@ function csrf(string $sesKey = 'csrf', int $hours = 1):string {
 	return "<input type='hidden' value='$key' name='$sesKey' />";
 }
 
-
 function csrf_verify(array $post, string $sesKey = 'csrf'):mixed {
 	
 	if(empty($post[$sesKey]))
@@ -402,6 +424,7 @@ function csrf_verify(array $post, string $sesKey = 'csrf'):mixed {
 
 	$ses = new \Core\Session;
 	$data = $ses->get($sesKey);
+
 
 	if(is_array($data)) {
 		if($data['key'] !== $post[$sesKey])
@@ -416,10 +439,9 @@ function csrf_verify(array $post, string $sesKey = 'csrf'):mixed {
 	return false;
 }
 
-
 function get_image(?string $path = '', string $type = 'post') {
-
 	$path = $path ?? '';
+
 	if(file_exists($path))
 		return ROOT . '/' . $path;
 	
@@ -462,6 +484,7 @@ function message_success(string $msg = '', bool $erase = false):?string {
 	return '';
 }
 
+
 function message_fail(string $msg = '', bool $erase = false):?string {
 	$ses = new \Core\Session;
 
@@ -476,6 +499,9 @@ function message_fail(string $msg = '', bool $erase = false):?string {
 
 		return $msg;
 	}
-
 	return '';
+}
+
+function class_path($folder, $class_name) {
+	return 'plugins/' . $folder. '/models/'. $class_name . '.php';
 }

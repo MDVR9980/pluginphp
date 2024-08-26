@@ -47,7 +47,6 @@ class Session {
 			unset($_SESSION[$this->varKey][$key]);
 			return $var;
 		}
-
 		return false;
 	}
 
@@ -118,7 +117,6 @@ class Session {
 					return $_SESSION[$this->userKey][$key];
 			}
 		}
-
 		return null;
 	}
 
@@ -130,5 +128,4 @@ class Session {
 
 		return null;
 	}
-	
 }

@@ -22,7 +22,7 @@ $thunder = new \Thunder\Thunder;
 
 if(empty($action)) {
 	call_user_func_array([$thunder,'help'], [$VERSION]);
-} else {
+}else {
 	if(is_callable([$thunder,$action])) {
 		call_user_func_array([$thunder,$action], [$argv]);
 	} else {

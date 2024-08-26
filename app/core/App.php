@@ -20,7 +20,7 @@ class App {
 		$after_content = ob_get_contents();
 
 		if(strlen($after_content) == strlen($before_content)) {
-			if(page() != '404') {
+			if(page() != '404'){
 				redirect('404');
 			}
 		}

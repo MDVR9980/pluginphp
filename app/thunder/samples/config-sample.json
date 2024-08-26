@@ -1,7 +1,8 @@
 {
 	"name":"New Plugin",
-	"versions":"1.0.0",
+	"version":"1.0.0",
 	"id":"new-plugin",
+	"description":"",
 	"author":"",
 	"author website":"",
 	"thumbnail":"thumbnail.jpg",
@@ -14,5 +15,4 @@
 	"dependencies": {
 
 	}
-
 }

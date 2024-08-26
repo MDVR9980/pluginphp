@@ -3,6 +3,8 @@
 /**
  * Plugin name: 
  * Description: 
+ * 
+ * 
  **/
 
 set_value([
@@ -42,11 +44,12 @@ add_action('view',function() {
 /** for manipulating data after a query operation **/
 add_filter('after_query',function($data) {
 
+	
 	if(empty($data['result']))
 		return $data;
 
 	foreach ($data['result'] as $key => $row) {
-	
+		
 	}
 
 	return $data;

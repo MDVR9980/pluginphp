@@ -16,6 +16,7 @@ add_action('before_view',function() {
     $link->title = 'Home';
     $link->slug  = 'home';
     $link->icon  = '';
+    $link->list_order  = 1;
     $link->permission  = '';
     $links[] = $link;
 

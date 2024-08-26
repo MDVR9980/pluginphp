@@ -10,13 +10,13 @@ defined('ROOT') or die("Direct script access denied");
  * Database class
  */
 class Database {
-	private static $query_id 	= '';
+	public static $query_id 	= '';
 	public $affected_rows 		= 0;
 	public $insert_id 			= 0;
 	public $error 				= '';
 	public $has_error 			= false;
 	public $table_exists_db 	= '';
-	public $missing_tables      = '';
+	public $missing_tables 		= [];
 
 	private function connect() {
 
@@ -36,18 +36,19 @@ class Database {
 			$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		} catch (PDOException $e) {
-			
+
 			die("Failed to connect to database with error " . $e->getMessage());
 		}
+
 		return $con;
 	}
 
 	public function get_row(string $query, array $data = [], string $data_type = 'object') {
-
 		$result = $this->query($query,$data,$data_type);
 		if(is_array($result) && count($result) > 0) {
 			return $result[0];
 		}
+
 		return false;
 	}
 
@@ -71,12 +72,12 @@ class Database {
 			if($result) {
 				if($data_type == 'object') {
 					$rows = $stm->fetchAll(PDO::FETCH_OBJ);
-				}else {
+				} else {
 					$rows = $stm->fetchAll(PDO::FETCH_ASSOC);
 				}
 			}
 
-		} catch(PDOException $e) {
+		}catch(PDOException $e) {
 			$this->error 				= $e->getMessage();
 			$this->has_error 			= true;
 		}
@@ -111,15 +112,7 @@ class Database {
 			$query = "SELECT TABLE_NAME AS tables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '".$this->table_exists_db."'";
  
 			$res = $this->query($query);
-
-			if(isset($res['result'])) {
-				$result = $APP['tables'] = $res['result'];
-			} else {
-				$this->error = 'Query did not return expected result structure.';
-				$this->has_error = true;
-				return false;
-			}
-			
+			$result = $APP['tables'] = $res;
 		} else {
 			$result = $APP['tables'];
 		}
@@ -137,7 +130,6 @@ class Database {
 				} else {
 					$this->missing_tables[] = $table;
 				}
-					
 			}
 			
 			if($count == count($mytables))
@@ -145,4 +137,5 @@ class Database {
 		}
 		return false;
 	}
+
 }

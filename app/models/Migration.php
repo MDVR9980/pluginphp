@@ -5,7 +5,6 @@ namespace Migration;
 defined('FCPATH') or die("Direct script access denied");
 
 use \Core\Database;
-
 /**
  * Migration class
  */
@@ -43,9 +42,14 @@ class Migration extends Database {
 
 			$query = trim($query,",");
 
-			$query .= ")ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4";
+			$query .= ")ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
 
 			$this->query($query);
+			if(!empty($this->error)) {
+
+				echo "\n\rError creating table $table with error: " . $this->error;
+				return;
+			}
 
 			$this->columns 		= [];
 			$this->keys 		= [];

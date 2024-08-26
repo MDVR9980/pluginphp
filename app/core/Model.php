@@ -90,6 +90,7 @@ class Model extends Database {
 		if(!empty($data)) {
 			$query = "update $this->table set ";
 			foreach ($data as $key => $value) {
+
 				$query .= $key . '= :'.$key.",";
 			}
 
@@ -97,6 +98,7 @@ class Model extends Database {
 			$data['my_id'] = $_my_id;
 
 			$query .= " where $this->primary_key = :my_id";
+
 			return $this->query($query,$data);
 		}
 
@@ -110,5 +112,19 @@ class Model extends Database {
 		
 		$data['_my_id'] = $_my_id;
 		return $this->query($query,$data);
+
+	}
+
+    /** generates a url string from usually a post title **/
+    /** used to generate a text unique id safe for url use **/
+    public function str_to_url(string $url):string {
+	   $url = str_replace("'", "", $url);
+	   $url = preg_replace('~[^\\pL0-9_]+~u', '-', $url);
+	   $url = trim($url, "-");
+	   $url = iconv("utf-8", "us-ascii//TRANSLIT", $url);
+	   $url = strtolower($url);
+	   $url = preg_replace('~[^-a-z0-9_]+~', '', $url);
+
+	   return $url;
 	}
 }

@@ -100,13 +100,13 @@ class Image {
 				imagejpeg($dst_image,$filename,90);
 				break;
 			case 'image/png':
-				imagepng($dst_image,$filename,90);
+				imagepng($dst_image,$filename);
 				break;
 			case 'image/gif':
 				imagegif($dst_image,$filename);
 				break;
 			case 'image/webp':
-				imagewebp($dst_image,$filename,90);
+				imagewebp($dst_image,$filename);
 				break;
 			
 			default:
@@ -115,6 +115,7 @@ class Image {
 
 		imagedestroy($dst_image);
 		return $filename;
+
 	}
 
 
@@ -193,13 +194,13 @@ class Image {
 				imagejpeg($dst_image,$filename,90);
 				break;
 			case 'image/png':
-				imagepng($dst_image,$filename,90);
+				imagepng($dst_image,$filename);
 				break;
 			case 'image/gif':
 				imagegif($dst_image,$filename);
 				break;
 			case 'image/webp':
-				imagewebp($dst_image,$filename,90);
+				imagewebp($dst_image,$filename);
 				break;
 			
 			default:
@@ -210,14 +211,14 @@ class Image {
 		return $filename;
 	}
 
-	public function getThumbnail(string $filename, $width = 700, $height = 700):string {
+	public function get_thumbnail(string $filename, $width = 700, $height = 700, $replace = false):string {
 
 		if(file_exists($filename)) {
 			$ext = explode(".", $filename);
 			$ext = end($ext);
 
 			$dest = preg_replace("/\.$ext$/", "_thumbnail.".$ext, $filename);
-			if(file_exists($dest))
+			if(file_exists($dest) && !$replace)
 				return $dest;
 
 			copy($filename, $dest);
@@ -225,8 +226,6 @@ class Image {
 
 			return $dest;
 		}
-
 		return $filename;
 	}
-
 }

@@ -6,10 +6,8 @@
  **/
 
 set_value([
-
 	'plugin_route'	=>'admin',
 	'logout_page'	=>'logout',
-
 ]);
 
 /** set user permissions for this plugin **/
@@ -26,8 +24,8 @@ add_action('before_controller',function() {
 
 	$vars = get_value();
 
-	if(false && page() == $vars['plugin_route'] && !user_can('view_admin_page')) {
-		message("Access to admin page denied! please try a different login");
+	if(page() == $vars['plugin_route'] && !user_can('view_admin_page')) {
+		message_fail("Access to admin page denied! please try a different login");
 		redirect('login');
 	}
 });

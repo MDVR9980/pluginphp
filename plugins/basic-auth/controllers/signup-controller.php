@@ -1,20 +1,19 @@
 <?php
 
-$user = new \BasicAuth\User;
+	$user = new \BasicAuth\User;
 
-$csrf = csrf_verify($req->post());
-$isValid = $user->validate_insert($req->post());
+	if($csrf = csrf_verify($req->post()) && $user->validate_insert($req->post())) {
+		$postdata = $req->post();
+		$postdata['date_created'] = date("Y-m-d H:i:s");
+		$postdata['password'] = password_hash($postdata['password'], PASSWORD_DEFAULT);
 
-if($csrf && $isValid) {
-    $postdata = $req->post();
-    $postdata['data_created'] = date('Y-m-d H:i:s');
-    $postdata['password'] = password_hash($postdata['password'], PASSWORD_DEFAULT);
-    $user->insert($postdata);
-    message_success('Signup complite! Please login to continue ');
-    redirect($vars['login_page']);
-} else {
-    if(!$csrf)
-        $user->errors['email'] = 'Form expired! Please refresh';
+		$user->insert($postdata);
 
-    set_value('errors', $user->errors);
-}
+		message_success("Signup complete! Please login to continue");
+		redirect($vars['login_page']);
+	} else {
+		if(!$csrf)
+			$user->errors['email'] = "Form expired! Please refresh";
+
+		set_value('errors',$user->errors);
+	}

@@ -1,0 +1,18 @@
+{
+	"name":"Basic Posts",
+	"version":"1.0.0",
+	"id":"basic-posts",
+	"description":"Creates posts for your website",
+	"author":"MDVR9980",
+	"author website":"",
+	"thumbnail":"thumbnail.jpg",
+	"active":true,
+	"index":1,
+	"routes": {
+		"on":["all"],
+		"off":["login","signup","home","logout"]
+	},
+	"dependencies": {
+
+	}
+}

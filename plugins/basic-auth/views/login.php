@@ -14,16 +14,16 @@
 		<div class="mb-4 text-muted text-center"><i>please login to continue</i></div>
 
 		<?php if(message_success()):?>
-			<div class="alert alert-danger text-center">
+			<div class="alert alert-success text-center">
 				<?=esc(message_success('',true))?>
 			</div>
 		<?php endif?>
-
 		<?php if(message_fail()):?>
 			<div class="alert alert-danger text-center">
 				<?=esc(message_fail('',true))?>
 			</div>
 		<?php endif?>
+		
 
 		<div class="form-floating my-4">
 		  <input value="<?=old_value('email')?>" name="email" type="email" class="form-control" id="floatingInput" placeholder="name@example.com"  style="border-radius: 40px;">

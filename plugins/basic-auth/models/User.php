@@ -35,19 +35,18 @@ class User extends Model {
 		'date_deleted',
 	];
 
-
 	public function validate_insert(array $data):bool {
 
 		if(empty($data['first_name'])) {
  			$this->errors['first_name'] = 'A first name is required';
  		} else
- 		if(!preg_match("/^[a-zA-Z]+$/", trim($data['first_name'])))	{
+ 		if(!preg_match("/^[a-zA-Z]+$/", trim($data['first_name']))) {
  			$this->errors['first_name'] = 'Only letters with no spaces allowed in first name';
  		}
 
  		if(empty($data['last_name'])) {
  			$this->errors['last_name'] = 'A last name is required';
- 		}else
+ 		} else
  		if(!preg_match("/^[a-zA-Z]+$/", trim($data['last_name']))) {
  			$this->errors['last_name'] = 'Only letters with no spaces allowed in last name';
  		}
@@ -68,7 +67,7 @@ class User extends Model {
 
  		if(empty($data['password'])) {
  			$this->errors['password'] = 'A password is required';
- 		}else
+ 		} else
  		if($data['password'] != $data['retype_password']) {
  			$this->errors['password'] = 'Passwords do not match';
  		}

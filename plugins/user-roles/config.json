@@ -1,6 +1,6 @@
 {
 	"name":"User Roles",
-	"versions":"1.0.0",
+	"version":"1.0.0",
 	"id":"user-roles",
 	"author":"MDVR9980",
 	"author website":"",
@@ -12,6 +12,6 @@
 		"off":[]
 	},
 	"dependencies": {
-		"basic-auth": "1.0.0"
+		"basic-auth":"1.0.0"
 	}
 }

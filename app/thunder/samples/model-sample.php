@@ -1,6 +1,7 @@
 <?php
 
 namespace {NAMESPACE};
+use \Model\Model;
 
 defined('ROOT') or die("Direct script access denied");
 
@@ -26,6 +27,7 @@ class {CLASS_NAME} extends Model {
 
 
 	public function validate_insert(array $data):bool {
+		$this->errors = [];
 
  		if(empty($data['email'])) {
  			$this->errors['email'] = 'Email is required';
@@ -40,6 +42,7 @@ class {CLASS_NAME} extends Model {
 	}
 
 	public function validate_update(array $data):bool {
+		$this->errors = [];
 		
 		$email_arr = [
 			'email'=>$data['email']
@@ -57,6 +60,7 @@ class {CLASS_NAME} extends Model {
  		if(!filter_var($data['email'],FILTER_VALIDATE_EMAIL)) {
  			$this->errors['email'] = 'Email is not valid';
  		}
+
 		return empty($this->errors);
 	}
 }

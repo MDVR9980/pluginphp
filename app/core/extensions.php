@@ -1,9 +1,7 @@
 <?php
 
-function check_extensions()
-{
-	$extensions = 
-	[
+function check_extensions() {
+	$extensions = [
 		'gd',
 		'pdo_mysql'
 	];
@@ -18,5 +16,4 @@ function check_extensions()
 		dd("please load the following extensions in your php.ini file: " . implode(",", $not_loaded));
 
 }
-
 check_extensions();

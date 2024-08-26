@@ -113,9 +113,9 @@ class Thunder {
  
  			$this->message("Plugin creation complete! Plugin folder: ".$folder);	
 
-		} else
+		}else
 		if($action == 'make:migration') {
-			$original_folder = $folder; 
+			$original_folder = $folder;
 			$folder = 'plugins/'.$folder.'/';
 
 			if(!file_exists($folder))
@@ -147,7 +147,7 @@ class Thunder {
 
 			$this->message("Migration file created. Filename: ".$filename,true);
 
-		} else
+		}else
 		if($action == 'make:model') {
 
 			$original_folder = $folder;
@@ -187,7 +187,7 @@ class Thunder {
 
 			$this->message("Model file created. Filename: ".$filename,true);
 
-		} else {
+		}else {
 			$this->message("Unknown command ". $action);
 		}
 	}
@@ -198,63 +198,80 @@ class Thunder {
 		$file_name 		= $args[3] ?? null;
 
 		if($action == 'migrate' || $action == 'migrate:rollback') {
-			$folder = 'plugins/'.$folder.'/migrations/';
+			$folders = [];
+			if($folder == 'all') {
+				$folders = glob('plugins/*',GLOB_ONLYDIR);
+			} else {
+				$folders[] = $folder = 'plugins/'.$folder;
+			}
 
-			if(!is_dir($folder))
-				$this->message("No migration files found in that location",true);
+			//loop
+			foreach ($folders as $folder) {
 
-			if(!empty($file_name)) {
-				/** run single file **/
-				$file = $folder . $file_name;
+				$folder = $folder.'/migrations/';
 
-				$this->message("Migrating file:". $file . "\n\r");
-
-				require_once $file;
-
-				$class_name = basename($file);
-				preg_match("/[a-zA-Z]+\.php$/", $class_name, $match);
-				$class_name = ucfirst(str_replace(".php", "", $match[0]));
-
-				$myclass = new ("\Migration\\$class_name");
-
-				if($action == 'migrate') {
-					$myclass->up();
-				} else {
-					$myclass->down();
+				if(!is_dir($folder)) {
+					$this->message("No migration files found in that location: $folder",false);
+					continue;
 				}
 
-				$this->message("Migration complete!");
-				$this->message("File: " . $file_name);
+				if(!empty($file_name)) {
+					/** run single file **/
+					$file = $folder . $file_name;
 
-			} else {
-				/** get all files from folder **/
-				$files = glob($folder.'*.php');
+					$this->message("Migrating file:". $file . "\n\r");
 
-				if(!empty($files)) {
+					require_once $file;
 
-					foreach ($files as $file) {
+					$class_name = basename($file);
+					preg_match("/[a-zA-Z_]+\.php$/", $class_name, $match);
+					$class_name = ucfirst(str_replace(".php", "", $match[0]));
+					$class_name = trim($class_name,'_');
 
-						$this->message("Migrating file:". $file . "\n\r");
+					$myclass = new ("\Migration\\$class_name");
 
-						require_once $file;
-
-						$class_name = basename($file);
-						preg_match("/[a-zA-Z]+\.php$/", $class_name, $match);
-						$class_name = ucfirst(str_replace(".php", "", $match[0]));
-
-						$myclass = new ("\Migration\\$class_name");
-
-						if($action == 'migrate') {
-							$myclass->up();
-						} else {
-							$myclass->down();
-						}
+					if($action == 'migrate') {
+						$myclass->up();
+					} else {
+						$myclass->down();
 					}
 
 					$this->message("Migration complete!");
+					$this->message("File: " . $file_name);
 
 				} else {
-					$this->message("No migration files found in specified folder");
+					/** get all files from folder **/
+					$files = glob($folder.'*.php');
+
+					if(!empty($files)) {
+
+						foreach ($files as $file) {
+
+							$this->message("Migrating file:". $file . "\n\r");
+
+							$class_name = basename($file);
+							preg_match("/[a-zA-Z_]+\.php$/", $class_name, $match);
+							$class_name = ucfirst(str_replace(".php", "", $match[0]));
+							$class_name = trim($class_name,'_');
+							$class_name = "\Migration\\$class_name";
+							
+							if(!class_exists($class_name,false))
+								require_once $file;
+
+							$myclass = new ($class_name);
+
+							if($action == 'migrate') {
+								$myclass->up();
+							} else {
+								$myclass->down();
+							}
+						}
+
+						$this->message("Migration complete!");
+
+					} else {
+						$this->message("No migration files found in specified folder");
+					}
 				}
 			}
 		} else
@@ -262,6 +279,7 @@ class Thunder {
 
 			$this->migrate(['thunder','migrate:rollback',$folder,$file_name]);
 			$this->migrate(['thunder','migrate',$folder,$file_name]);
+
 		}
 	}
 	

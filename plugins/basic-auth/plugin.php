@@ -11,9 +11,15 @@ set_value([
 	'signup_page'	=>'signup',
 	'forgot_page'	=>'forgot',
 	'logout_page'	=>'logout',
-	'admin_plugin_route'	=>'admin',
-	'tables'		=> [
-		'users_table'=> 'users',
+	'admin_plugin_route' =>'admin',
+	'tables'		     => [
+		'users_table'        => 'users',
+	],
+
+	'optional_table'	 => [
+		'roles_table'    	 => 'user_roles',
+		'permissions_table'  => 'role_permissions',
+		'roles_map_table' 	 => 'user_roles_map',
 	],
 ]);
 
@@ -45,6 +51,35 @@ add_action('controller',function() {
 		require plugin_path('controllers/logout-controller.php');
 });
 
+/** set permissions for current user **/
+add_filter('user_permissions',function($permissions) {
+
+	$ses = new \Core\Session;
+
+	if($ses->is_logged_in()) {
+
+		$vars = get_value();
+		$db = new \Core\Database();
+	
+		$query = "select * from " . $vars['optional_table']['roles_table'];
+		$roles = $db->query($query);
+	
+		if(is_array($roles)) {
+	
+		} else {
+			$permissions[] = 'all';
+		}
+		
+	
+		// $permissions[] = 'view_users';
+		// $permissions[] = 'view_user_details';
+		// $permissions[] = 'add_user';
+		// $permissions[] = 'edit_user';
+		// $permissions[] = 'delete_user';
+	}
+		
+	return $permissions;
+});
 
 add_filter('header-footer_before_menu_links',function($links) {
 

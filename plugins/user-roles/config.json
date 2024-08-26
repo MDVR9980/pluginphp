@@ -1,0 +1,17 @@
+{
+	"name":"User Roles",
+	"versions":"1.0.0",
+	"id":"user-roles",
+	"author":"MDVR9980",
+	"author website":"",
+	"thumbnail":"thumbnail.jpg",
+	"active":true,
+	"index":4,
+	"routes": {
+		"on":["admin"],
+		"off":[]
+	},
+	"dependencies": {
+		"basic-auth": "1.0.0"
+	}
+}

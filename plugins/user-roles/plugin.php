@@ -1,19 +1,16 @@
 <?php
 
 /**
- * Plugin name: Users Manager
- * Description: A way for admin to manage users
+ * Plugin name: User Roles
+ * Description: A way for admin to user roles
  **/
 
 set_value([
 
 	'admin_route'	      =>'admin',
-	'plugin_route'	      =>'users',
+	'plugin_route'	      =>'user-roles',
 	'table'			      => [
 		'users_table'    	 => 'users',
-	],
-
-	'optional_table'			      => [
 		'roles_table'    	 => 'user_roles',
 		'permissions_table'  => 'role_permissions',
 		'roles_map_table' 	 => 'user_roles_map',
@@ -26,19 +23,17 @@ $db = new \Core\Database;
 $tables = get_value()['tables'];
 
 if(!$db->table_exists($tables)) {
-	dd('Missing database tabels in ' . plugin_id() . 'plugin: '  . implode(",", $db->missing_tables));
+	dd('Missing database tabels in ' . plugin_id() . 'plugin: <br>'  . implode(",", $db->missing_tables));
 	die; 
 }
 
 /** set user permissions for this plugin **/
 add_filter('permissions',function($permissions) {
 
-	$permissions[] = 'all';
-	$permissions[] = 'view_users';
-	$permissions[] = 'view_user_details';
-	$permissions[] = 'add_user';
-	$permissions[] = 'edit_user';
-	$permissions[] = 'delete_user';
+	$permissions[] = 'view_roles';
+	$permissions[] = 'add_role';
+	$permissions[] = 'edit_role';
+	$permissions[] = 'delete_role';
 
 	return $permissions;
 });
@@ -50,9 +45,9 @@ add_filter('basic-admin_before_admin_links',function($links) {
 		$vars = get_value();
 
 		$obj = (object)[];
-		$obj->title = 'Users';
+		$obj->title = 'User ًRoles';
 		$obj->link = ROOT . '/' . $vars['admin_route'] . '/' . $vars['plugin_route'];
-		$obj->icon = 'fa-solid fa-people-group';
+		$obj->icon = 'fa-solid fa-unlock';
 		$obj->parent = 0;
 		$links[] = $obj;
 	}
